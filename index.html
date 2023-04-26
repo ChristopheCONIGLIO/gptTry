@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPT requete</title>
+  <style>
+    body {
+      background-color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+    }
+
+    #form-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    #form-container textarea {
+      width: 100%;
+      height: 300px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      /*resize: none;*/
+      font-family: monospace;
+    }
+
+    #form-container button {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+	  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 28%);
+    }
+
+    #form-container #ascii-output {
+      width: 100%;
+      height: 300px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      /*resize: none;*/
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div id="form-container">
+    <h1>chat GPT prompt par Christophe CONIGLIO</h1>
+    
+    <form>
+      <textarea id="text-input" placeholder="Entrez votre texte ici"></textarea>
+      <br>
+	  <br>
+	  <br>
+
+	  <button type="button" onclick="convertToASCII()">Envoyer la requete</button>
+      <textarea id="ascii-output" placeholder="" readonly></textarea>
+    </form>
+  </div>
+  <script>
+    function convertToASCII() {
+      /*const input = document.getElementById("text-input").value;
+      let output = "";
+      for (let i = 0; i < input.length; i++) {
+        output += input.charCodeAt(i) + " ";
+      }
+      document.getElementById("ascii-output").value = output.trim();*/
+
+
+	  const xhr = new XMLHttpRequest();
+
+        // configurer la requête
+        xhr.open("POST", "https://api.openai.com/v1/chat/completions");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Authorization", "Bearer key");
+
+        // définir la fonction à exécuter en cas de réponse
+        xhr.onload = function () {
+        if (xhr.status === 200) {
+            //console.log(xhr.responseText);
+            //var monTextarea = document.getElementById("myTextarea");
+            
+            //choices[0].message.content
+            const obj = JSON.parse(xhr.responseText);
+            //console.log(obj.id);
+            //console.log(obj.choices[0].message.content);
+            //monTextarea.value = obj.choices[0].message.content;
+			document.getElementById("ascii-output").value = obj.choices[0].message.content;
+        } else {
+            console.log("Une erreur est survenue!");
+        }
+        };
+
+        // envoyer la requête
+        const requestBody = JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [
+            {
+            role: "user",
+            content: document.getElementById("text-input").value,
+            },
+        ],
+        });
+        xhr.send(requestBody);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+  </script>
+</body>
+</html>
